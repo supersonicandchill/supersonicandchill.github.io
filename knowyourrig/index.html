@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#F5F4EF">
+<link rel="icon" href="data:,">
+<title>Know Your Rig</title>
+<style>
+:root{
+  --bg:#F5F4EF; --navy:#2B3A52; --amber:#D4860B; --teal:#3D7A6F; --red:#C0392B;
+  --engine:#C8102E; --ink:#1A1A2E; --muted:#4A4F5E; --line:#D3D0C4; --card:#FBFAF7;
+}
+html{color-scheme:light only;background:#F5F4EF !important;}
+*{box-sizing:border-box;}
+body{margin:0;background:#F5F4EF !important;color:var(--ink);
+  font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;}
+#app{max-width:560px;margin:0 auto;
+  padding:calc(env(safe-area-inset-top) + 8px) 16px calc(env(safe-area-inset-bottom) + 32px);}
+button{font:inherit;color:inherit;}
+@media (min-width:700px){body{font-size:21px;} #app{max-width:900px;padding-left:32px;padding-right:32px;} h1.title{font-size:32px;} h2{font-size:22px;} .q{font-size:26px;} .btn{min-height:58px;font-size:20px;border-radius:12px;} .btn.small{min-height:48px;} .opt{min-height:64px;font-size:21px;} .pin{width:38px;height:38px;} .num{width:38px;height:38px;font-size:18px;} .meta{font-size:17px;} .found .where{font-size:34px;} .findbox{min-height:62px;font-size:22px;}}
+body::before{content:"";position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top) + 5px);background:linear-gradient(to bottom,transparent env(safe-area-inset-top),var(--engine) env(safe-area-inset-top));pointer-events:none;z-index:5;}
+header.top{display:flex;align-items:center;gap:8px;min-height:48px;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--engine);}
+h1.title{font-size:22px;line-height:1.2;font-weight:700;color:var(--navy);margin:0;flex:1;overflow-wrap:anywhere;}
+h2{color:var(--navy);margin:0 0 8px;font-size:18px;overflow-wrap:anywhere;}
+p{margin:6px 0;}
+.sub{color:var(--muted);margin:0 0 12px;}
+.sect{border-left:4px solid var(--teal);padding-left:10px;margin:22px 0 8px;font-weight:700;color:var(--navy);}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 16px;border-radius:10px;
+  border:1.5px solid var(--navy);background:var(--navy);color:#F5F4EF;font-weight:600;cursor:pointer;text-align:center;}
+.btn.ghost{background:transparent;color:var(--navy);}
+.btn.teal{background:var(--teal);border-color:var(--teal);color:#FFFFFF;}
+.btn.danger{background:var(--red);border-color:var(--red);color:#FFFFFF;}
+.btn.small{min-height:40px;padding:0 12px;}
+.btn.block{display:flex;width:100%;margin:10px 0;}
+.btn:disabled{opacity:.5;cursor:default;}
+.card{display:block;width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0;text-align:left;}
+button.card{cursor:pointer;}
+.row{display:flex;align-items:center;gap:12px;}
+.row.tight{padding:10px 14px;}
+.grow{flex:1;min-width:0;}
+.name{font-weight:600;overflow-wrap:anywhere;}
+.meta{color:var(--muted);font-size:14px;}
+.chev{color:var(--navy);font-size:24px;line-height:1;}
+.badge{background:var(--amber);color:var(--ink);font-weight:700;font-size:14px;border-radius:999px;padding:3px 10px;white-space:nowrap;}
+.thumb{width:56px;height:56px;object-fit:cover;border-radius:8px;border:1px solid var(--line);flex:none;}
+.thumb.empty{background:#E8E5DA;}
+.warn{border:1.5px solid var(--red);color:var(--red);background:var(--card);border-radius:10px;padding:10px 12px;margin:10px 0;font-weight:600;}
+.banner{background:var(--navy);color:#F5F4EF;border-radius:10px;padding:10px 12px;margin:10px 0;display:flex;gap:10px;align-items:center;}
+.banner span{flex:1;}
+.banner .btn{background:transparent;border-color:#F5F4EF;color:#F5F4EF;min-height:38px;padding:0 12px;}
+.num{width:30px;height:30px;border-radius:50%;background:var(--amber);color:var(--ink);font-weight:700;display:grid;place-items:center;flex:none;font-size:14px;border:1.5px solid var(--ink);}
+.num.nopin{background:transparent;color:var(--muted);border-color:var(--line);}
+.photo{position:relative;line-height:0;border-radius:10px;overflow:hidden;border:2px solid var(--engine);margin:10px 0;touch-action:manipulation;user-select:none;-webkit-user-select:none;}
+.photo img{width:100%;height:auto;display:block;-webkit-user-drag:none;pointer-events:none;}
+.photo.tapping{outline:3px solid var(--amber);cursor:crosshair;}
+.pin{position:absolute;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:var(--amber);color:var(--ink);
+  border:2px solid #FBFAF7;box-shadow:0 0 0 1.5px var(--ink);display:grid;place-items:center;font:700 13px/1 system-ui,sans-serif;padding:0;}
+.pin.sel{background:var(--navy);color:#F5F4EF;}
+.pin.user{background:#FFFFFF;color:var(--ink);}
+.pin.ring::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:3px solid var(--amber);}
+.findbox{width:100%;min-height:52px;font-size:18px;padding:0 14px;border-radius:12px;border:2px solid var(--navy);background:#FFFFFF;color:var(--ink);margin:6px 0 10px;-webkit-appearance:none;appearance:none;}
+.letter{margin:14px 0 2px;padding-left:4px;font-weight:700;color:var(--teal);}
+.found{background:var(--navy);color:#F5F4EF;border-radius:14px;padding:14px 16px;margin:8px 0;}
+.found .lbl{font-size:14px;opacity:.9;}
+.found .where{font-size:26px;line-height:1.2;font-weight:700;overflow-wrap:anywhere;}
+.sheet textarea{width:100%;min-height:110px;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--navy);background:#FFFFFF;color:var(--ink);margin:8px 0;resize:vertical;}
+.clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;}
+.notecard{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--teal);border-radius:12px;padding:12px 14px;margin:10px 0;}
+.notecard .lbl{font-weight:700;color:var(--navy);margin-bottom:4px;}
+.notecard .txt{white-space:pre-wrap;overflow-wrap:anywhere;}
+.dropzone{border:2px dashed var(--navy);border-radius:12px;padding:26px 12px;text-align:center;color:var(--navy);margin:10px 0;}
+.opt{display:block;width:100%;text-align:left;min-height:52px;padding:12px 14px;margin:8px 0;border-radius:12px;
+  border:1.5px solid var(--navy);background:var(--card);color:var(--ink);font-weight:600;cursor:pointer;overflow-wrap:anywhere;}
+.opt.unsure{border-style:dashed;color:var(--muted);font-weight:500;}
+.opt:disabled{opacity:1;cursor:default;}
+.opt.right{background:var(--teal);border-color:var(--teal);color:#FFFFFF;}
+.opt.wrong{background:var(--red);border-color:var(--red);color:#FFFFFF;}
+.fb{border-left:5px solid var(--teal);}
+.fb.bad{border-left-color:var(--red);}
+.fb strong.ok{color:var(--teal);} .fb strong.bad{color:var(--red);}
+.prog{height:8px;border-radius:99px;background:#E1DED2;overflow:hidden;margin:6px 0 14px;}
+.prog>i{display:block;height:100%;background:var(--teal);}
+.q{font-size:20px;line-height:1.25;color:var(--navy);font-weight:700;margin:6px 0 10px;overflow-wrap:anywhere;}
+.overlay{position:fixed;inset:0;background:rgba(26,26,46,.5);display:flex;align-items:flex-end;justify-content:center;z-index:50;}
+.sheet{background:#F5F4EF;width:100%;max-width:560px;border-radius:18px 18px 0 0;
+  padding:16px 16px calc(env(safe-area-inset-bottom) + 16px);max-height:88vh;overflow:auto;}
+.sheet input[type=text]{width:100%;min-height:48px;font-size:16px;padding:0 12px;border-radius:10px;border:1.5px solid var(--navy);background:#FFFFFF;color:var(--ink);margin:8px 0;}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%);background:var(--navy);color:#F5F4EF;
+  padding:10px 16px;border-radius:10px;z-index:80;max-width:90%;text-align:center;}
+.two{display:flex;gap:10px;} .two>*{flex:1;}
+.empty{color:var(--muted);}
+
+/* ---- polish ---- */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 -2px;-webkit-overflow-scrolling:touch;}
+.chip{flex:none;min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid var(--navy);background:var(--card);color:var(--navy);font-weight:600;cursor:pointer;}
+.chip.on{background:var(--navy);color:#F5F4EF;}
+.rigname{margin:0 0 6px;font-weight:600;color:var(--navy);}
+h1.title,.found .where{font-family:"Avenir Next Condensed","Arial Narrow","Roboto Condensed",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;letter-spacing:.2px;}
+h1.title{font-size:27px;font-weight:700;}
+.card{box-shadow:0 1px 0 rgba(26,26,46,.05),0 3px 10px rgba(26,26,46,.05);transition:background-color .12s,transform .12s;}
+button.card:active{background:#F0EEE6;transform:scale(.992);}
+.btn{transition:transform .12s,filter .12s;}
+.btn:active:not(:disabled){transform:scale(.985);filter:brightness(1.12);}
+.opt{transition:transform .12s;} .opt:active:not(:disabled){transform:scale(.99);}
+.sect{font-size:17px;letter-spacing:.1px;margin-top:26px;}
+.found{border-bottom:4px solid var(--engine);box-shadow:0 6px 16px rgba(26,26,46,.12);}
+.found .where{font-size:28px;}
+.photo{box-shadow:0 4px 14px rgba(26,26,46,.14);}
+.pin{box-shadow:0 0 0 2px #FFFFFF,0 2px 6px rgba(0,0,0,.35);}
+.prog>i{background:linear-gradient(90deg,var(--teal),var(--teal));}
+.brand{display:flex;align-items:center;gap:12px;flex:1;min-width:0;}
+.brand img{width:44px;height:44px;border-radius:10px;flex:none;box-shadow:0 2px 6px rgba(26,26,46,.25);}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--amber);outline-offset:2px;}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+@media (min-width:700px){h1.title{font-size:34px;} .found .where{font-size:38px;} .brand img{width:56px;height:56px;border-radius:13px;}}
+
+/* ui pass 2 */
+header.top.inner{display:block;border-bottom:2px solid var(--engine);padding-bottom:10px;margin-bottom:12px;}
+.backlink{display:inline-flex;align-items:center;min-height:40px;margin:0 0 0 -4px;padding:0 10px 0 4px;background:none;border:0;color:var(--teal);font:inherit;font-weight:700;cursor:pointer;}
+header.top.inner h1.title{font-size:30px;line-height:1.1;margin-top:0;}
+.mono{flex:0 0 auto;width:52px;height:52px;border-radius:10px;background:var(--navy);color:#F5F4EF;display:flex;align-items:center;justify-content:center;font-family:"Avenir Next Condensed","Arial Narrow","Roboto Condensed",-apple-system,Helvetica,Arial,sans-serif;font-weight:800;font-size:23px;letter-spacing:.5px;border-bottom:4px solid var(--engine);margin-right:12px;}
+.rigrow{align-items:center;padding:12px 14px;}
+.pair{display:flex;gap:10px;margin:14px 0 6px;}
+.pair .btn{flex:1;min-width:0;padding:0 8px;font-size:15px;}
+.btn.primary{min-height:56px;font-size:18px;box-shadow:0 2px 0 rgba(26,26,46,.25);}
+.btn.tealline{background:transparent;color:var(--teal);border-color:var(--teal);}
+.btn.dashed{background:transparent;color:var(--navy);border:1.5px dashed #9AA3B2;}
+.center{text-align:center;}.nudge p{margin:6px 0 10px;}
+.textlink{display:block;margin:10px auto 4px;padding:10px 16px;background:none;border:0;color:var(--muted);font:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+@media (min-width:700px){.mono{width:64px;height:64px;font-size:28px;} header.top.inner h1.title{font-size:38px;} .btn.primary{min-height:64px;}}
+
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.editbtn{min-height:40px;min-width:76px;padding:0 18px;background:transparent;color:var(--navy);}
+.editbtn.on{background:var(--amber);border-color:var(--amber);color:var(--ink);}
+.editbar{background:#FBEBD0;border:1.5px solid var(--amber);color:var(--ink);border-radius:10px;padding:10px 12px;margin:0 0 12px;font-weight:600;font-size:15px;}
+.hint{margin:8px 2px 6px;}
+.notetext{white-space:pre-wrap;overflow-wrap:anywhere;font-size:18px;line-height:1.4;margin:6px 0 14px;}
+.pin.ghost{background:#FFFFFF;color:var(--navy);border:2px dashed var(--navy);pointer-events:none;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+'use strict';
+
+/* ------------------------------------------------------------------ *
+ *  Know Your Rig — single file, no dependencies.
+ *  Storage sits behind Store{} so the Capacitor build can swap the
+ *  IndexedDB calls for @capacitor/filesystem + @capacitor/preferences.
+ * ------------------------------------------------------------------ */
+
+var INTERVALS=[0,1,3,7,14,30,60];      // days between reviews, by box
+var TAP_RADIUS=0.16;                    // fraction of the photo's short side
+var MAX_NAME=60, MAX_NOTE=500, MAX_COMPS=100, MAX_TOOLS=500, MAX_PHOTO_CHARS=8*1024*1024;
+var clock=function(){return new Date();};
+
+var state={rigs:[],comps:[],tools:[],view:'home',rigId:null,compId:null,stack:[],quiz:null,placing:null,toolId:null,findQ:'',edit:false};
+var photoUrl=new Map();                 // photoId -> object URL
+var db=null, persistent=false;
+
+/* ---------- tiny DOM helper (no innerHTML, so names can't inject markup) ---------- */
+function h(tag,attrs){
+  var e=document.createElement(tag), kids=Array.prototype.slice.call(arguments,2);
+  if(attrs){ Object.keys(attrs).forEach(function(k){
+    var v=attrs[k]; if(v==null||v===false) return;
+    if(k==='class') e.className=v;
+    else if(k.slice(0,2)==='on') e.addEventListener(k.slice(2),v);
+    else if(k==='disabled'||k==='value'||k==='src'||k==='type'||k==='placeholder'||k==='maxLength'||k==='autocomplete') e[k]=v;
+    else e.setAttribute(k,v===true?'':v);
+  });}
+  (function add(list){ list.forEach(function(c){
+    if(c==null||c===false) return;
+    if(Array.isArray(c)) return add(c);
+    e.append(c.nodeType?c:document.createTextNode(String(c)));
+  });})(kids);
+  return e;
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,9);}
+function pl(n,w){return n+' '+w+(n===1?'':'s');}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function lc(s){return String(s).trim().toLowerCase();}
+
+var toastTimer=null;
+function toast(msg){
+  var old=document.querySelector('.toast'); if(old) old.remove();
+  var t=h('div',{class:'toast',role:'status'},msg); document.body.append(t);
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.remove();},3200);
+}
+
+/* ---------- storage ---------- */
+var STORES=['rigs','comps','tools','photos'];
+function openDB(){return new Promise(function(res,rej){
+  if(!window.indexedDB) return rej(new Error('no indexedDB'));
+  var r; try{ r=indexedDB.open('knowyourrig',1); }catch(e){ return rej(e); }
+  r.onupgradeneeded=function(){var d=r.result;STORES.forEach(function(s){if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:'id'});});};
+  r.onsuccess=function(){res(r.result);}; r.onerror=function(){rej(r.error);}; r.onblocked=function(){rej(new Error('blocked'));};
+});}
+function tx(store,mode,fn){return new Promise(function(res,rej){
+  var t=db.transaction(store,mode), s=t.objectStore(store), req;
+  try{req=fn(s);}catch(e){return rej(e);}
+  t.oncomplete=function(){res(req&&req.result);}; t.onerror=function(){rej(t.error);}; t.onabort=function(){rej(t.error||new Error('aborted'));};
+});}
+var Store={
+  init:function(){return openDB().then(function(d){db=d;persistent=true;}).catch(function(){persistent=false;});},
+  all:function(s){return persistent?tx(s,'readonly',function(st){return st.getAll();}).then(function(r){return r||[];}):Promise.resolve([]);},
+  put:function(s,o){return persistent?tx(s,'readwrite',function(st){return st.put(o);}):Promise.resolve();},
+  del:function(s,id){return persistent?tx(s,'readwrite',function(st){return st.delete(id);}):Promise.resolve();}
+};
+function save(store,obj){return Store.put(store,obj).then(function(){return true;}).catch(function(e){console.error(e);toast('Could not save. Storage may be full.');return false;});}
+function drop(store,id){return Store.del(store,id).catch(function(e){console.error(e);});}
+
+/* ---------- model helpers ---------- */
+function rigById(id){return state.rigs.find(function(r){return r.id===id;});}
+function compById(id){return state.comps.find(function(c){return c.id===id;});}
+function toolById(id){return state.tools.find(function(t){return t.id===id;});}
+function compTools(cid){return state.tools.filter(function(t){return t.compId===cid;});}
+function newSrs(){return {box:0,due:null,seen:0,lapses:0,last:null,lastMode:null};}
+function rigStats(rid){
+  var tools=state.tools.filter(function(t){return t.rigId===rid;});
+  return {comps:state.comps.filter(function(c){return c.rigId===rid;}).length,tools:tools.length,
+          due:tools.filter(isDue).length,fresh:tools.filter(isNew).length};
+}
+
+/* ---------- spaced repetition ---------- */
+function dayNum(d){d=d||clock();return Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/86400000);}
+function isNew(t){return !t.srs.seen;}
+function isDue(t){return t.srs.seen>0&&t.srs.due!=null&&t.srs.due<=dayNum();}
+function grade(t,correct,practice){
+  var s=t.srs, today=dayNum(); s.seen++; s.last=today;
+  if(correct){
+    if(practice&&s.due!=null&&s.due>today) return;         // early practice never inflates the interval
+    s.box=Math.min(s.box+1,INTERVALS.length-1); s.due=today+INTERVALS[s.box];
+  }else{ s.box=0; s.lapses++; s.due=today; }
+}
+
+/* ---------- quiz engine ---------- */
+function compsWithName(rigId,name){
+  var ids=new Set(); state.tools.forEach(function(t){if(t.rigId===rigId&&lc(t.name)===lc(name))ids.add(t.compId);}); return ids;
+}
+function distractorNames(t){
+  var seen=new Set([lc(t.name)]), out=[];
+  state.tools.filter(function(o){return o.rigId===t.rigId&&o.id!==t.id;})
+    .sort(function(a,b){return (b.compId===t.compId)-(a.compId===t.compId);})
+    .forEach(function(o){var k=lc(o.name);if(seen.has(k))return;seen.add(k);out.push(o.name);});
+  return out;
+}
+function modesFor(t){
+  var comp=compById(t.compId), m=[];
+  if(!comp) return ['recall'];
+  var have=compsWithName(t.rigId,t.name);
+  var others=state.comps.filter(function(c){return c.rigId===t.rigId&&!have.has(c.id);});
+  if(others.length>=1) m.push('where');
+  if(t.x!=null&&comp.photoId&&photoUrl.has(comp.photoId)){ m.push('tap'); if(distractorNames(t).length>=2) m.push('what'); }
+  return m.length?m:['recall'];
+}
+function pickMode(t,avoid){
+  var ms=modesFor(t), a=avoid||t.srs.lastMode, pool=ms.filter(function(x){return x!==a;});
+  var use=pool.length?pool:ms; return use[Math.floor(Math.random()*use.length)];
+}
+function buildSession(rigId,opts){
+  opts=opts||{}; var tools=state.tools.filter(function(t){return t.rigId===rigId&&compById(t.compId);}), q;
+  if(opts.practice){
+    var seen=tools.filter(function(t){return t.srs.seen>0;});
+    q=shuffle(seen.length?seen:tools).slice(0,10);
+  }else{
+    var due=tools.filter(isDue).sort(function(a,b){return a.srs.due-b.srs.due;});
+    var fresh=shuffle(tools.filter(isNew)).slice(0,opts.limitNew==null?5:opts.limitNew);
+    q=due.concat(fresh).slice(0,opts.max||20);
+  }
+  return q.map(function(t){return {toolId:t.id,mode:pickMode(t),reinforce:false};});
+}
+function judgeTap(x,y,px,py,w,hgt){return Math.hypot((x-px)*w,(y-py)*hgt)<=TAP_RADIUS*Math.min(w,hgt);}
+
+/* ---------- navigation ---------- */
+function go(view,ids,quiz){
+  state.stack.push({view:state.view,rigId:state.rigId,compId:state.compId});
+  state.view=view; Object.assign(state,ids||{}); state.quiz=quiz||null; state.placing=null;
+  if(view!=='rig'&&view!=='comp') state.edit=false;
+  render(); window.scrollTo(0,0);
+}
+function back(){
+  var p=state.stack.pop();
+  if(p){state.view=p.view;state.rigId=p.rigId;state.compId=p.compId;} else {state.view='home';}
+  state.quiz=null; state.placing=null; if(state.view!=='rig'&&state.view!=='comp') state.edit=false; render(); window.scrollTo(0,0);
+}
+
+/* ---------- sheets ---------- */
+function sheet(title,build,onClose){
+  var overlay=h('div',{class:'overlay',role:'dialog','aria-modal':'true','aria-label':title}), closed=false;
+  var close=function(){overlay.remove();document.removeEventListener('keydown',onKey);if(!closed){closed=true;if(onClose)onClose();}};
+  var onKey=function(e){if(e.key==='Escape')close();};
+  var box=h('div',{class:'sheet'},h('h2',null,title)); build(box,close); overlay.append(box);
+  overlay.addEventListener('click',function(e){if(e.target===overlay)close();});
+  document.addEventListener('keydown',onKey); document.body.append(overlay);
+  var inp=box.querySelector('input'); if(inp){inp.focus();inp.select();}
+  return close;
+}
+function nameSheet(title,initial,okLabel,onOk,extra,onClose){
+  sheet(title,function(box,close){
+    var inp=h('input',{type:'text',value:initial||'',maxLength:MAX_NAME,autocomplete:'off','aria-label':title});
+    var go_=function(){var v=inp.value.trim(); if(!v){toast('Enter a name.');return;} close(); onOk(v);};
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')go_();});
+    box.append(inp);
+    if(extra) box.append(extra(inp,close));
+    box.append(h('div',{class:'two'},h('button',{class:'btn ghost',onclick:close},'Cancel'),h('button',{class:'btn',onclick:go_},okLabel)));
+  },onClose);
+}
+function confirmSheet(msg,label,onOk,cls){
+  sheet('Are you sure?',function(box,close){
+    box.append(h('p',null,msg),h('div',{class:'two'},h('button',{class:'btn ghost',onclick:close},'Cancel'),
+      h('button',{class:'btn '+(cls||'danger'),onclick:function(){close();onOk();}},label)));
+  });
+}
+
+/* ---------- photos ---------- */
+function compress(file,max,q){
+  var url=URL.createObjectURL(file);
+  return new Promise(function(res,rej){var i=new Image();i.onload=function(){res(i);};i.onerror=function(){rej(new Error('Could not read that image.'));};i.src=url;})
+  .then(function(img){
+    var s=Math.min(1,(max||1600)/Math.max(img.naturalWidth,img.naturalHeight));
+    var w=Math.max(1,Math.round(img.naturalWidth*s)), hh=Math.max(1,Math.round(img.naturalHeight*s));
+    var c=document.createElement('canvas'); c.width=w; c.height=hh; c.getContext('2d').drawImage(img,0,0,w,hh);
+    return new Promise(function(res,rej){c.toBlob(function(b){b?res(b):rej(new Error('Could not process that image.'));},'image/jpeg',q||0.82);});
+  }).then(function(b){URL.revokeObjectURL(url);return b;},function(e){URL.revokeObjectURL(url);throw e;});
+}
+var lastPicker=null;
+function pickFile(accept,cb){
+  if(lastPicker){lastPicker.remove();lastPicker=null;}
+  var i=document.createElement('input'); i.type='file'; i.accept=accept; i.style.display='none';
+  i.addEventListener('change',function(){var f=i.files&&i.files[0]; i.remove(); if(lastPicker===i)lastPicker=null; if(f) cb(f);});
+  lastPicker=i; document.body.append(i); i.click();
+}
+function setCompPhoto(comp,blob){
+  var id=uid(), old=comp.photoId;
+  return Store.put('photos',{id:id,blob:blob}).then(function(){
+    photoUrl.set(id,URL.createObjectURL(blob)); comp.photoId=id; return save('comps',comp);
+  }).then(function(){
+    if(old){URL.revokeObjectURL(photoUrl.get(old));photoUrl.delete(old);return drop('photos',old);}
+  }).catch(function(e){console.error(e);toast('Could not save the photo. Storage may be full.');});
+}
+function choosePhoto(comp){
+  pickFile('image/*',function(f){
+    compress(f).then(function(b){return setCompPhoto(comp,b);}).then(render).catch(function(e){toast(e.message||'Photo failed.');});
+  });
+}
+
+/* ---------- photo view with pins ---------- */
+function photoView(comp,o){
+  o=o||{}; var url=comp&&comp.photoId&&photoUrl.get(comp.photoId);
+  if(!url) return h('div',{class:'dropzone'},'No photo for this compartment yet.');
+  var box=h('div',{class:'photo'+(o.tapping?' tapping':'')}, h('img',{src:url,alt:comp.name+' photo',draggable:false}));
+  (o.pins||[]).forEach(function(p){
+    var el=h('button',{class:'pin'+(p.sel?' sel':'')+(p.ring?' ring':'')+(p.user?' user':''),
+      style:'left:'+(p.x*100)+'%;top:'+(p.y*100)+'%;','aria-label':p.label||('Pin '+p.text)},p.text);
+    if(p.onclick) el.addEventListener('click',function(e){e.stopPropagation();p.onclick();}); else el.style.pointerEvents='none';
+    box.append(el);
+  });
+  if(o.onTap) box.addEventListener('click',function(e){
+    var r=box.getBoundingClientRect(); if(!r.width||!r.height) return;
+    o.onTap(Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),Math.min(1,Math.max(0,(e.clientY-r.top)/r.height)),r.width,r.height);
+  });
+  return box;
+}
+
+/* ---------- views ---------- */
+function header(title,withBack,right){
+  if(!withBack&&title==='Know Your Rig') return h('header',{class:'top'},h('div',{class:'brand'},h('img',{src:'data:image/png;base64,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',alt:'',width:44,height:44}),h('h1',{class:'title'},title)));
+  if(withBack) return h('header',{class:'top inner'},h('div',{class:'hrow'},h('button',{class:'backlink',onclick:back,'aria-label':'Back'},'‹ Back'),right||null),h('h1',{class:'title'},title));
+  return h('header',{class:'top'},h('h1',{class:'title'},title));
+}
+
+function editToggle(){
+  return h('button',{class:'btn small editbtn'+(state.edit?' on':''),'aria-pressed':state.edit?'true':'false',onclick:function(){state.edit=!state.edit;state.placing=null;render();window.scrollTo(0,0);}},state.edit?'Done':'Edit');
+}
+function editBar(msg){return h('div',{class:'editbar',role:'status'},msg||'Editing. Changes save as you go. Tap Done when finished.');}
+function toolInfo(t){
+  sheet(t.name,function(box,close){
+    box.append(t.note?h('p',{class:'notetext'},t.note):h('p',{class:'meta'},'No note for this tool.'),h('button',{class:'btn ghost block',onclick:close},'Close'));
+  });
+}
+function rememberRig(id){try{localStorage.setItem('kyr.lastRig',id);}catch(e){}}
+function lastRigId(){
+  var id=null; try{id=localStorage.getItem('kyr.lastRig');}catch(e){}
+  if(id&&rigById(id)) return id;
+  var withTools=state.rigs.find(function(r){return state.tools.some(function(t){return t.rigId===r.id;});});
+  return (withTools||state.rigs[0]||{}).id||null;
+}
+function manageRig(rig){
+  var s_=rigStats(rig.id);
+  sheet(rig.name,function(box,close){
+    box.append(h('button',{class:'btn block',disabled:!s_.comps,onclick:function(){close();shareRig(rig);}},'Share this rig'),
+      h('p',{class:'meta'},'Sends photos, pins, notes and tool names. Your quiz progress stays with you. Share again after changes and crew who import it get the update.'),
+      rig.fromShare?document.createDocumentFragment():h('button',{class:'btn ghost block',onclick:function(){close();setPrompt('Name your set of rigs',getSetName(),'Save',function(){toast('Saved. New shares carry this name.');});}},'Name my set of rigs'),
+      h('button',{class:'btn ghost block',onclick:function(){close();nameSheet('Rename rig',rig.name,'Save',function(v){rig.name=v;save('rigs',rig);render();});}},'Rename'),
+      h('button',{class:'btn danger block',onclick:function(){close();confirmSheet('Delete '+rig.name+' with all its compartments, photos and tools?','Delete rig',function(){deleteRig(rig);});}},'Delete'),
+      h('button',{class:'btn ghost block',onclick:close},'Close'));
+  });
+}
+function manageComp(comp){
+  sheet(comp.name,function(box,close){
+    box.append(h('button',{class:'btn ghost block',onclick:function(){close();nameSheet('Rename compartment',comp.name,'Save',function(v){comp.name=v;save('comps',comp);render();});}},'Rename'),
+      h('button',{class:'btn danger block',onclick:function(){close();confirmSheet('Delete '+comp.name+' and its tools and photo?','Delete compartment',function(){deleteComp(comp);back();});}},'Delete'),
+      h('button',{class:'btn ghost block',onclick:close},'Close'));
+  });
+}
+
+function mono(name){var w=String(name).match(/[A-Za-z]+|\d+/g)||['?'],l=w[0].charAt(0).toUpperCase(),d=null;for(var i=1;i<w.length;i++){if(/^\d/.test(w[i])){d=w[i];break;}}
+  if(/^\d/.test(w[0])) return w[0].slice(0,3);
+  return d?l+d.slice(0,3):(w[0].slice(0,2).charAt(0).toUpperCase()+w[0].slice(1,2).toLowerCase());}
+
+function viewHome(){
+  var out=[header('Know Your Rig',false)];
+  if(!state.rigs.length) out.push(h('p',{class:'sub'},'Learn where every tool lives on your apparatus. Photograph a compartment, pin the tools, then get quizzed.'));
+  else if(state.tools.length) out.push(h('button',{class:'btn teal block',onclick:function(){state.findQ='';go('find',{rigId:lastRigId()});}},'Find a tool'));
+  if(backupNeeded()) out.push(h('div',{class:'card nudge'},h('div',{class:'name'},getLastBackup()?'Time for a fresh backup':'Back up your rigs'),
+    h('p',{class:'meta'},'If you delete the app or change phones, a backup file brings every rig, photo and quiz score back. Save it to iCloud Drive or email it to yourself.'),
+    h('button',{class:'btn teal block',onclick:exportBackup},'Back up now')));
+  if(!persistent) out.push(h('div',{class:'warn'},'Storage is unavailable here. Nothing you add will be saved.'));
+  if(!state.rigs.length) out.push(h('div',{class:'card empty'},h('strong',null,'Start with one rig.'),
+    h('p',null,'Add your engine or truck, then add a compartment and take a photo of it. Or import a rig a crewmate shared.')));
+  var card=function(r){
+    var s=rigStats(r.id);
+    return h('button',{class:'card row rigrow',onclick:function(){go('rig',{rigId:r.id});}},
+      h('div',{class:'mono','aria-hidden':'true'},mono(r.name)),
+      h('div',{class:'grow'},h('div',{class:'name'},r.name),h('div',{class:'meta'},pl(s.comps,'compartment')+' · '+pl(s.tools,'tool'))),
+      s.due?h('span',{class:'badge'},s.due+' due'):null,h('span',{class:'chev','aria-hidden':'true'},'›'));
+  };
+  var mine=state.rigs.filter(function(r){return !r.fromShare;}), shared=state.rigs.filter(function(r){return r.fromShare;});
+  if(shared.length&&mine.length) out.push(h('div',{class:'sect'},'My rigs'));
+  mine.forEach(function(r){out.push(card(r));});
+  var order=[]; shared.forEach(function(r){var k=r.setName||''; if(order.indexOf(k)<0) order.push(k);});
+  order.forEach(function(k){
+    out.push(h('div',{class:'sect'},k||'Shared with me'));
+    shared.filter(function(r){return (r.setName||'')===k;}).forEach(function(r){out.push(card(r));});
+  });
+  out.push(h('div',{class:'pair'},h('button',{class:'btn ghost',onclick:function(){nameSheet('New rig','','Add rig',addRig);}},'+ Add rig'),
+    h('button',{class:'btn ghost',onclick:function(){pickFile('',importDeck);}},'Import or restore')));
+  if(state.rigs.length){
+    var lb=getLastBackup();
+    out.push(h('button',{class:'textlink',onclick:exportBackup},'Back up all my rigs'),
+      h('p',{class:'meta center'},lb?'Last backup: '+ago(lb):'Not backed up yet'));
+  }
+  return out;
+}
+
+function viewRig(){
+  var rig=rigById(state.rigId); if(!rig){state.view='home';return viewHome();}
+  var s=rigStats(rig.id), ed=state.edit, out=[header(rig.name,true,editToggle())];
+  if(ed) out.push(editBar());
+  else if(s.tools){
+    var fresh=Math.min(s.fresh,5), startBtn;
+    if(s.due+fresh>0) startBtn=h('button',{class:'btn block primary',onclick:function(){startQuiz(rig.id,false);}},'Start quiz · '+s.due+' due · '+fresh+' new');
+    else startBtn=h('button',{class:'btn teal block primary',onclick:function(){startQuiz(rig.id,true);}},'All caught up · practice anyway');
+    out.push(startBtn,h('button',{class:'btn tealline block',onclick:function(){state.findQ='';go('find',{rigId:rig.id});}},'Find a tool'));
+  }
+  out.push(h('div',{class:'sect'},'Compartments'));
+  var comps=state.comps.filter(function(c){return c.rigId===rig.id;});
+  if(!comps.length) out.push(h('div',{class:'card empty'},ed?'No compartments yet. Add one for each door, shelf or tray you want to learn.':'No compartments yet. Tap Edit to set this rig up.'));
+  else if(!ed&&!s.tools) out.push(h('div',{class:'card empty'},'No tools yet. Tap Edit, open a compartment and tap its photo to add tools.'));
+  comps.forEach(function(c){
+    var url=c.photoId&&photoUrl.get(c.photoId), n=compTools(c.id).length;
+    out.push(h('button',{class:'card row',onclick:function(){go('comp',{compId:c.id});}},
+      url?h('img',{class:'thumb',src:url,alt:''}):h('div',{class:'thumb empty'}),
+      h('div',{class:'grow'},h('div',{class:'name'},c.name),h('div',{class:'meta'},pl(n,'tool')+(url?'':' · no photo'))),
+      h('span',{class:'chev','aria-hidden':'true'},'›')));
+  });
+  if(ed){
+    out.push(h('button',{class:'btn block',onclick:function(){nameSheet('New compartment','','Add compartment',function(v){addComp(rig,v);});}},'+ Add compartment'));
+    out.push(h('button',{class:'textlink',onclick:function(){manageRig(rig);}},'Manage rig'));
+  } else if(s.comps){
+    out.push(h('button',{class:'textlink',onclick:function(){shareRig(rig);}},'Share this rig'));
+  }
+  return out;
+}
+
+function viewFind(){
+  var rig=rigById(state.rigId)||rigById(lastRigId()); if(!rig){state.view='home';return viewHome();}
+  state.rigId=rig.id; rememberRig(rig.id);
+  var out=[header('Find a tool',true)];
+  if(state.rigs.length>1) out.push(h('div',{class:'chips',role:'group','aria-label':'Choose a rig'},state.rigs.map(function(r){
+    return h('button',{class:'chip'+(r.id===rig.id?' on':''),'aria-pressed':r.id===rig.id?'true':'false',onclick:function(){state.rigId=r.id;render();}},r.name);})));
+  else out.push(h('p',{class:'meta rigname'},rig.name));
+  var items=state.tools.filter(function(t){return t.rigId===rig.id;}).map(function(t){return {t:t,c:compById(t.compId)};}).filter(function(x){return x.c;});
+  var isL=function(s){return /^\p{L}/u.test(s);};
+  var cmp=function(a,b){var la=isL(a.t.name)?0:1,lb=isL(b.t.name)?0:1;return la-lb||a.t.name.localeCompare(b.t.name,undefined,{sensitivity:'base'})||a.c.name.localeCompare(b.c.name,undefined,{sensitivity:'base'});};
+  var inp=h('input',{type:'search',class:'findbox',placeholder:'Type a tool name',autocomplete:'off',autocapitalize:'off',autocorrect:'off',spellcheck:'false','aria-label':'Search tools'});
+  inp.value=state.findQ||'';
+  var list=h('div',null);
+  function draw(){
+    var q=lc(inp.value); state.findQ=inp.value; list.replaceChildren();
+    var shown=items.filter(function(x){return !q||lc(x.t.name).indexOf(q)>-1;});
+    if(q) shown.sort(function(a,b){var pa=lc(a.t.name).indexOf(q)===0?0:1,pb=lc(b.t.name).indexOf(q)===0?0:1;return pa-pb||cmp(a,b);}); else shown.sort(cmp);
+    if(!items.length) list.append(h('div',{class:'card empty'},'No tools on this rig yet.'));
+    else if(!shown.length) list.append(h('div',{class:'card empty'},'Nothing matches “'+inp.value.trim()+'”. Check the spelling, or try fewer letters.'));
+    var last='';
+    shown.forEach(function(x){
+      var L=isL(x.t.name)?x.t.name.charAt(0).toUpperCase():'#';
+      if(!q&&L!==last){last=L;list.append(h('div',{class:'letter','aria-hidden':'true'},L));}
+      list.append(h('button',{class:'card row tight',onclick:function(){go('found',{toolId:x.t.id});}},
+        h('div',{class:'grow'},h('div',{class:'name'},x.t.name),h('div',{class:'meta'},x.c.name)),h('span',{class:'chev','aria-hidden':'true'},'›')));
+    });
+  }
+  inp.addEventListener('input',draw); draw();
+  out.push(inp,list);
+  setTimeout(function(){if(state.view==='find'&&!state.findQ)try{inp.focus();}catch(e){}},0);
+  return out;
+}
+function viewFound(){
+  var t=toolById(state.toolId), c=t&&compById(t.compId);
+  if(!t||!c){state.view='find';return viewFind();}
+  var out=[header(t.name,true),h('div',{class:'found'},h('div',{class:'lbl'},'It is in'),h('div',{class:'where'},c.name))];
+  var others=state.tools.filter(function(o){return o.rigId===t.rigId&&o.id!==t.id&&lc(o.name)===lc(t.name);}).map(function(o){var oc=compById(o.compId);return oc?oc.name:null;}).filter(Boolean);
+  if(others.length) out.push(h('p',{class:'meta'},'Also in: '+others.join(', ')));
+  if(c.photoId&&photoUrl.has(c.photoId)){
+    out.push(photoView(c,{pins:t.x!=null?[{x:t.x,y:t.y,text:'★',label:t.name,ring:true}]:[]}));
+    if(t.x==null) out.push(h('p',{class:'meta'},'No pin was set for this tool. Look in the compartment above.'));
+  }
+  if(t.note) out.push(h('div',{class:'notecard'},h('div',{class:'lbl'},'Note'),h('div',{class:'txt'},t.note)));
+  out.push(h('button',{class:'btn ghost block',onclick:function(){go('comp',{compId:c.id});}},'Open this compartment'));
+  return out;
+}
+
+function viewComp(){
+  var comp=compById(state.compId); if(!comp){state.view='home';return viewHome();}
+  var ed=state.edit, tools=compTools(comp.id), out=[header(comp.name,true,editToggle())], pl_=state.placing;
+  if(ed) out.push(editBar());
+  if(pl_) out.push(h('div',{class:'banner'},h('span',null,pl_.toolId?'Tap the photo to move the pin.':'Tap the photo where “'+pl_.name+'” is.'),
+    h('button',{class:'btn',onclick:function(){state.placing=null;render();}},'Cancel')));
+  var hasPhoto=!!(comp.photoId&&photoUrl.has(comp.photoId));
+  if(!hasPhoto){
+    if(ed) out.push(h('div',{class:'dropzone'},h('p',null,'Add a photo of this compartment. Open the door, stand back, get everything in frame.'),
+      h('button',{class:'btn',onclick:function(){choosePhoto(comp);}},'Take or choose photo')));
+    else out.push(h('div',{class:'dropzone'},h('p',null,'No photo yet. Tap Edit to add one.')));
+  }else{
+    var pins=tools.map(function(t,i){return t.x==null?null:{x:t.x,y:t.y,text:String(i+1),label:t.name,sel:pl_&&pl_.toolId===t.id,
+      onclick:pl_?null:function(){ed?toolSheet(t):toolInfo(t);}};}).filter(Boolean);
+    var pv;
+    var onTap=pl_?placeAt:(ed?function(x,y){
+      var ghost=h('span',{class:'pin ghost','aria-hidden':'true',style:'left:'+(x*100)+'%;top:'+(y*100)+'%;'},'+'); pv.append(ghost);
+      nameSheet('New tool','','Save',function(v){
+        if(compTools(comp.id).length>=MAX_TOOLS){toast('Tool limit reached for this compartment.');return;}
+        createTool(comp,v,x,y);
+      },null,function(){ghost.remove();});
+    }:null);
+    pv=photoView(comp,{pins:pins,tapping:!!pl_||ed,onTap:onTap});
+    out.push(pv);
+    if(ed&&!pl_) out.push(h('p',{class:'meta hint'},'Tap the photo where a tool is. Tap a pin to edit it.'));
+    if(ed) out.push(h('button',{class:'btn ghost small',onclick:function(){choosePhoto(comp);}},'Replace photo'));
+  }
+  out.push(h('div',{class:'sect'},'Tools in this compartment'));
+  if(!tools.length) out.push(h('div',{class:'card empty'},ed?'No tools yet. Tap the photo to add the first one.':'No tools yet. Tap Edit to add them.'));
+  tools.forEach(function(t,i){
+    out.push(h('button',{class:'card row tight',onclick:function(){ed?toolSheet(t):toolInfo(t);}},
+      h('span',{class:'num'+(t.x==null?' nopin':'')},t.x==null?'–':String(i+1)),
+      h('div',{class:'grow'},h('div',{class:'name'},t.name),t.note?h('div',{class:'meta clamp'},t.note):null),t.x==null?h('span',{class:'meta'},'no pin'):null));
+  });
+  if(ed){
+    out.push(h('button',{class:'btn dashed block',onclick:function(){addToolSheet(comp);}},'+ Add tool'));
+    out.push(h('button',{class:'textlink',onclick:function(){manageComp(comp);}},'Manage compartment'));
+  }
+  return out;
+}
+
+/* ---------- actions ---------- */
+function addRig(name){var r={id:uid(),name:name,created:Date.now()};state.rigs.push(r);save('rigs',r);state.edit=true;go('rig',{rigId:r.id});}
+function addComp(rig,name){
+  if(state.comps.filter(function(c){return c.rigId===rig.id;}).length>=MAX_COMPS){toast('That is the compartment limit for one rig.');return;}
+  var c={id:uid(),rigId:rig.id,name:name,photoId:null,created:Date.now()};state.comps.push(c);save('comps',c);state.edit=true;go('comp',{compId:c.id});choosePhoto(c);
+}
+function addToolSheet(comp){
+  if(compTools(comp.id).length>=MAX_TOOLS){toast('Tool limit reached for this compartment.');return;}
+  var hasPhoto=!!(comp.photoId&&photoUrl.has(comp.photoId));
+  nameSheet('New tool','','Save without pin',function(v){createTool(comp,v,null,null);},hasPhoto?function(inp,close){
+    return h('button',{class:'btn teal block',onclick:function(){var v=inp.value.trim();if(!v){toast('Enter a name.');return;}close();state.placing={name:v,toolId:null};render();}},'Place pin on photo');
+  }:null);
+}
+function createTool(comp,name,x,y){
+  var t={id:uid(),rigId:comp.rigId,compId:comp.id,name:name,x:x,y:y,srs:newSrs(),created:Date.now()};
+  state.tools.push(t);save('tools',t);render();return t;
+}
+function placeAt(x,y){
+  var p=state.placing,comp=compById(state.compId); if(!p||!comp) return;
+  if(p.toolId){var t=toolById(p.toolId);if(t){t.x=x;t.y=y;save('tools',t);}state.placing=null;render();}
+  else{state.placing=null;createTool(comp,p.name,x,y);}
+}
+function toolSheet(t){
+  var comp=compById(t.compId), hasPhoto=!!(comp&&comp.photoId&&photoUrl.has(comp.photoId));
+  sheet('Edit tool',function(box,close){
+    var inp=h('input',{type:'text',value:t.name,maxLength:MAX_NAME,autocomplete:'off','aria-label':'Tool name'}); box.append(inp);
+    var note=h('textarea',{maxLength:MAX_NOTE,placeholder:'Note (optional): tips, quirks, what it is used for','aria-label':'Note'}); note.value=t.note||''; box.append(note);
+    box.append(h('button',{class:'btn block',onclick:function(){var v=inp.value.trim();if(!v){toast('Enter a name.');return;}t.name=v;t.note=note.value.trim().slice(0,MAX_NOTE);if(!t.note)delete t.note;save('tools',t);close();render();}},'Save'));
+    if(hasPhoto) box.append(h('button',{class:'btn teal block',onclick:function(){close();state.placing={toolId:t.id,name:t.name};render();}},t.x==null?'Place pin':'Move pin'));
+    if(t.x!=null) box.append(h('button',{class:'btn ghost block',onclick:function(){t.x=null;t.y=null;save('tools',t);close();render();}},'Remove pin'));
+    box.append(h('button',{class:'btn danger block',onclick:function(){close();confirmSheet('Delete '+t.name+'?','Delete tool',function(){
+      state.tools=state.tools.filter(function(o){return o.id!==t.id;});drop('tools',t.id);render();});}},'Delete tool'));
+    box.append(h('button',{class:'btn ghost block',onclick:close},'Close'));
+  });
+}
+function forgetPhoto(pid){if(!pid)return;var u=photoUrl.get(pid);if(u)URL.revokeObjectURL(u);photoUrl.delete(pid);drop('photos',pid);}
+function deleteComp(c){
+  compTools(c.id).forEach(function(t){drop('tools',t.id);});
+  state.tools=state.tools.filter(function(t){return t.compId!==c.id;});
+  state.comps=state.comps.filter(function(x){return x.id!==c.id;});
+  forgetPhoto(c.photoId);drop('comps',c.id);
+}
+function deleteRig(r){
+  state.comps.filter(function(c){return c.rigId===r.id;}).forEach(deleteComp);
+  state.rigs=state.rigs.filter(function(x){return x.id!==r.id;});drop('rigs',r.id);back();
+}
+
+/* ---------- quiz ---------- */
+function startQuiz(rigId,practice){
+  var items=buildSession(rigId,{practice:practice});
+  if(!items.length){toast('Nothing to quiz yet.');return;}
+  go('quiz',{rigId:rigId},{rigId:rigId,items:items,i:0,answered:null,revealed:false,results:[],practice:practice});
+}
+function answer(correct,extra){
+  var q=state.quiz; if(!q||q.answered) return;
+  var it=q.items[q.i], t=toolById(it.toolId); if(!t) return;
+  q.answered=Object.assign({correct:correct},extra||{});
+  if(!it.reinforce){
+    grade(t,correct,q.practice); t.srs.lastMode=it.mode; save('tools',t); q.results.push({toolId:t.id,correct:correct});
+    if(!correct) q.items.splice(Math.min(q.i+3,q.items.length),0,{toolId:t.id,mode:pickMode(t,it.mode),reinforce:true});
+  }
+  render();
+}
+function next(){var q=state.quiz;q.i++;q.answered=null;q.revealed=false;render();window.scrollTo(0,0);}
+
+function feedback(t,comp,ans,extraPins){
+  var pins=t.x!=null?[{x:t.x,y:t.y,text:'✓',label:t.name,ring:true}]:[];
+  if(extraPins) pins=pins.concat(extraPins);
+  return h('div',{class:'card fb'+(ans.correct?'':' bad')},
+    h('strong',{class:ans.correct?'ok':'bad'},ans.correct?'Correct.':'Missed.'),
+    h('div',null,t.name+' → '+comp.name),
+    photoView(comp,{pins:pins}),
+    h('button',{class:'btn block',onclick:next},'Next'));
+}
+function optionButtons(opts,chosenIdx,rightIdx,onPick){
+  var done=chosenIdx!==undefined, out=[];
+  opts.forEach(function(o,i){
+    var cls='opt'+(done&&i===rightIdx?' right':'')+(done&&i===chosenIdx&&i!==rightIdx?' wrong':'');
+    out.push(h('button',{class:cls,disabled:done,onclick:function(){onPick(i);}},o.label));
+  });
+  if(!done) out.push(h('button',{class:'opt unsure',onclick:function(){onPick(-1);}},'I don’t know'));
+  return out;
+}
+
+function viewQuiz(){
+  var q=state.quiz, rig=rigById(state.rigId);
+  if(!q||!rig) return [header('Quiz',true)];
+  if(q.i>=q.items.length) return summary(q,rig);
+  var it=q.items[q.i], t=toolById(it.toolId), comp=t&&compById(t.compId);
+  if(!t||!comp){q.i++;return viewQuiz();}
+  var out=[h('header',{class:'top'},h('h1',{class:'title'},rig.name+' quiz'),h('button',{class:'btn ghost small',onclick:back},'End')),
+    h('div',{class:'prog','aria-hidden':'true'},h('i',{style:'width:'+Math.round(q.i/q.items.length*100)+'%'})),
+    h('div',{class:'meta'},'Question '+(q.i+1)+' of '+q.items.length+(it.reinforce?' · second look':''))];
+  var a=q.answered;
+
+  if(it.mode==='where'){
+    if(!it.opts){
+      var have=compsWithName(t.rigId,t.name);
+      var others=shuffle(state.comps.filter(function(c){return c.rigId===t.rigId&&!have.has(c.id);})).slice(0,3);
+      it.opts=shuffle([{id:comp.id,label:comp.name,ok:true}].concat(others.map(function(c){return {id:c.id,label:c.name,ok:false};})));
+    }
+    var right=it.opts.findIndex(function(o){return o.ok;});
+    out.push(h('div',{class:'q'},'Where is the '+t.name+'?'));
+    out.push.apply(out,optionButtons(it.opts,a?a.idx:undefined,right,function(i){answer(i===right,{idx:i});}));
+    if(a) out.push(feedback(t,comp,a));
+  }
+  else if(it.mode==='what'){
+    if(!it.opts){
+      var d=shuffle(distractorNames(t).slice(0,6)).slice(0,3);
+      it.opts=shuffle([{label:t.name,ok:true}].concat(d.map(function(n){return {label:n,ok:false};})));
+    }
+    var right2=it.opts.findIndex(function(o){return o.ok;});
+    out.push(h('div',{class:'q'},'What is the marked tool in '+comp.name+'?'));
+    out.push(photoView(comp,{pins:[{x:t.x,y:t.y,text:'?',label:'Marked tool',ring:true}]}));
+    out.push.apply(out,optionButtons(it.opts,a?a.idx:undefined,right2,function(i){answer(i===right2,{idx:i});}));
+    if(a) out.push(h('div',{class:'card fb'+(a.correct?'':' bad')},h('strong',{class:a.correct?'ok':'bad'},a.correct?'Correct.':'Missed.'),
+      h('div',null,'It was the '+t.name+'.'),h('button',{class:'btn block',onclick:next},'Next')));
+  }
+  else if(it.mode==='tap'){
+    out.push(h('div',{class:'q'},'Open '+comp.name+'. Tap where the '+t.name+' is.'));
+    if(!a) out.push(photoView(comp,{tapping:true,onTap:function(x,y,w,hh){answer(judgeTap(x,y,t.x,t.y,w,hh),{tap:{x:x,y:y}});}}),
+      h('button',{class:'opt unsure',onclick:function(){answer(false,{tap:null});}},'I don’t know'));
+    else out.push(feedback(t,comp,a,a.tap?[{x:a.tap.x,y:a.tap.y,text:'·',label:'Your tap',user:true}]:null));
+  }
+  else{ // recall (fallback when the rig has no photos or pins to test against)
+    out.push(h('div',{class:'q'},'Where is the '+t.name+'?'));
+    if(!q.revealed&&!a) out.push(h('p',{class:'meta'},'Say it out loud, then check.'),h('button',{class:'btn block',onclick:function(){q.revealed=true;render();}},'Show answer'));
+    else if(!a) out.push(h('div',{class:'card'},h('strong',null,comp.name),photoView(comp,{pins:t.x!=null?[{x:t.x,y:t.y,text:'✓',ring:true}]:[]})),
+      h('div',{class:'two'},h('button',{class:'btn danger',onclick:function(){answer(false);}},'Missed it'),h('button',{class:'btn teal',onclick:function(){answer(true);}},'Knew it')));
+    else out.push(h('div',{class:'card fb'+(a.correct?'':' bad')},h('strong',{class:a.correct?'ok':'bad'},a.correct?'Logged as known.':'Logged as missed.'),
+      h('div',null,t.name+' → '+comp.name),h('button',{class:'btn block',onclick:next},'Next')));
+  }
+  return out;
+}
+function summary(q,rig){
+  var right=q.results.filter(function(r){return r.correct;}).length, missed=q.results.filter(function(r){return !r.correct;});
+  var out=[header('Session done',false),h('div',{class:'card'},h('div',{class:'q'},right+' of '+q.results.length+' right on the first try.'),
+    q.practice?h('p',{class:'meta'},'Practice sessions only reschedule the ones you miss.'):null)];
+  if(missed.length){out.push(h('div',{class:'sect'},'Study these'));
+    missed.forEach(function(r){var t=toolById(r.toolId),c=t&&compById(t.compId);if(t&&c)out.push(h('div',{class:'card'},h('div',{class:'name'},t.name),h('div',{class:'meta'},c.name)));});}
+  out.push(h('button',{class:'btn block',onclick:back},'Done'),
+    h('button',{class:'btn ghost block',onclick:function(){var p=q.practice,id=q.rigId;back();startQuiz(id,p||!buildSession(id).length);}},'Another round'));
+  return out;
+}
+
+/* ---------- sharing: a rig deck is one JSON file (photos inline as JPEG) ---------- */
+function blobToDataUrl(b){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result);};r.onerror=function(){rej(r.error);};r.readAsDataURL(b);});}
+function dataUrlToBlob(s){
+  var m=/^data:image\/jpeg;base64,([A-Za-z0-9+\/=]+)$/.exec(s); if(!m) throw new Error('bad photo');
+  var bin=atob(m[1]), n=bin.length, u=new Uint8Array(n); for(var i=0;i<n;i++)u[i]=bin.charCodeAt(i);
+  return new Blob([u],{type:'image/jpeg'});
+}
+function safeFile(n){return (n.replace(/[^A-Za-z0-9 _-]+/g,'').trim().replace(/\s+/g,'-')||'rig')+'.rigdeck';}
+/* ---------- your set name (shown to people you share with) ---------- */
+function cleanSet(v){return typeof v==='string'?v.replace(/[\u0000-\u001f\u007f]+/g,' ').trim().slice(0,MAX_NAME):'';}
+function getSetName(){var v=''; try{v=localStorage.getItem('kyr.setName')||'';}catch(e){} return cleanSet(v);}
+function setSetName(v){try{localStorage.setItem('kyr.setName',cleanSet(v));}catch(e){}}
+function setPrompt(title,initial,okLabel,onOk,extra){
+  nameSheet(title,initial,okLabel,function(v){setSetName(v);onOk(cleanSet(v));},function(inp,close){
+    inp.placeholder='For example: Smith\u2019s set of rigs';
+    var box=h('div',null,h('p',{class:'meta'},'People you share with see this name above the rigs you send them.'));
+    if(extra) box.append(extra(close));
+    return box;
+  });
+}
+function shareRig(rig){
+  if(rig.fromShare||getSetName()||state.setAsked){exportDeck(rig);return;}
+  setPrompt('Name your set of rigs','','Save and share',function(){exportDeck(rig);},function(close){
+    return h('button',{class:'btn ghost block',onclick:function(){close();state.setAsked=true;exportDeck(rig);}},'Share without a name');
+  });
+}
+/* Build the JSON object for one rig. Share copies bump the revision; backups keep it. */
+function serializeRig(rig,forBackup){
+  var comps=state.comps.filter(function(c){return c.rigId===rig.id;});
+  // stable ids let a later, updated copy of this deck find the same compartments and tools
+  var dirty=[];
+  if(!rig.deckId) rig.deckId=uid()+uid();
+  if(forBackup){ if(!rig.deckRev) rig.deckRev=Date.now(); } else rig.deckRev=Date.now();
+  dirty.push(['rigs',rig]);
+  comps.forEach(function(c){
+    if(!c.sid){c.sid=uid();dirty.push(['comps',c]);}
+    compTools(c.id).forEach(function(t){if(!t.sid){t.sid=uid();dirty.push(['tools',t]);}});
+  });
+  dirty.forEach(function(d){save(d[0],d[1]);});
+  // photos are read straight from their object URLs so this also works when storage is unavailable
+  return Promise.all(comps.map(function(c){
+    var u=c.photoId&&photoUrl.get(c.photoId); if(!u) return {c:c,photo:null};
+    return fetch(u).then(function(r){return r.blob();}).then(blobToDataUrl).then(function(d){return {c:c,photo:d};});
+  })).then(function(rows){
+    var deck={app:'knowyourrig',v:1,id:rig.deckId,rev:rig.deckRev,name:rig.name,set:(rig.fromShare?rig.setName:getSetName())||undefined,
+      comps:rows.map(function(r,i){return {k:i,sid:r.c.sid,name:r.c.name,photo:r.photo};}),tools:[]};
+    if(forBackup) deck.fromShare=rig.fromShare?true:undefined;
+    rows.forEach(function(r,i){compTools(r.c.id).forEach(function(t){
+      var o={k:i,sid:t.sid,name:t.name,x:t.x,y:t.y,note:t.note||undefined};
+      if(forBackup) o.srs=t.srs;
+      deck.tools.push(o);});});
+    return deck;
+  });
+}
+/* Hand a file to the OS: the iOS share sheet in the app, the Web Share sheet, or a plain download.
+   Resolves true when the file was handed off, false when the person cancelled. */
+function deliverFile(file,title,dialog){
+  var cap=window.Capacitor, P=cap&&cap.Plugins;
+  if(cap&&cap.isNativePlatform&&cap.isNativePlatform()&&P&&P.Filesystem&&P.Share){
+    // inside the iOS app: write the file to the cache folder, then hand it to the share sheet
+    return blobToDataUrl(file).then(function(u){
+      return P.Filesystem.writeFile({path:file.name,data:u.split(',')[1],directory:'CACHE'});
+    }).then(function(r){
+      return P.Share.share({title:title,url:r.uri,dialogTitle:dialog});
+    }).then(function(){return true;},function(e){if(e&&/cancel/i.test(String(e.message||e)))return false;throw e;});
+  }
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    return navigator.share({files:[file],title:title}).then(function(){return true;},function(e){if(e&&e.name==='AbortError')return false;throw e;});
+  }
+  var a=h('a',{href:URL.createObjectURL(file),download:file.name}); document.body.append(a); a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500); toast('Saved '+file.name);
+  return Promise.resolve(true);
+}
+function exportDeck(rig){
+  serializeRig(rig,false).then(function(deck){
+    var file=new File([JSON.stringify(deck)],safeFile(rig.name),{type:'application/json'});
+    return deliverFile(file,rig.name+' – Know Your Rig','Share rig');
+  }).catch(function(e){console.error(e);toast('Could not share this rig.');});
+}
+
+/* ---------- back up everything to one file ---------- */
+var MAX_RIGS=50;
+function getLastBackup(){var v=0; try{v=+localStorage.getItem('kyr.lastBackup')||0;}catch(e){} return v>0?v:0;}
+function setLastBackup(t){try{localStorage.setItem('kyr.lastBackup',String(t));}catch(e){}}
+function ago(t){
+  var d=Math.floor((Date.now()-t)/86400000);
+  return d<=0?'today':d===1?'yesterday':d+' days ago';
+}
+function backupNeeded(){
+  var own=state.tools.filter(function(t){var r=rigById(t.rigId);return r&&!r.fromShare;}).length;
+  if(own<5) return false;
+  var lb=getLastBackup(); return !lb||Date.now()-lb>21*86400000;
+}
+function exportBackup(){
+  if(!state.rigs.length){toast('Nothing to back up yet.');return;}
+  Promise.all(state.rigs.map(function(r){return serializeRig(r,true);})).then(function(rigs){
+    var b={app:'knowyourrig',v:1,kind:'backup',made:Date.now(),set:getSetName()||undefined,rigs:rigs};
+    var day=new Date().toISOString().slice(0,10);
+    var file=new File([JSON.stringify(b)],'Know-Your-Rig-Backup-'+day+'.rigdeck',{type:'application/json'});
+    return deliverFile(file,'Know Your Rig backup','Back up my rigs').then(function(done){
+      if(done){setLastBackup(Date.now());toast('Backup ready. Keep it in iCloud Drive, Files or your email.');render();}
+    });
+  }).catch(function(e){console.error(e);toast('Could not make the backup.');});
+}
+function cleanSrs(x){
+  var o=newSrs(); if(!x||typeof x!=='object') return o;
+  var n=function(v,lo,hi){return typeof v==='number'&&isFinite(v)&&v>=lo&&v<=hi;};
+  if(n(x.box,0,INTERVALS.length-1)) o.box=Math.floor(x.box);
+  if(x.due===null||n(x.due,0,1e6)) o.due=x.due===null?null:Math.floor(x.due);
+  if(n(x.seen,0,1e6)) o.seen=Math.floor(x.seen);
+  if(n(x.lapses,0,1e6)) o.lapses=Math.floor(x.lapses);
+  if(x.last===null||n(x.last,0,1e15)) o.last=x.last;
+  if(['where','what','tap','recall'].indexOf(x.lastMode)>=0) o.lastMode=x.lastMode;
+  return o;
+}
+function parseBackup(d){
+  if(!Array.isArray(d.rigs)) throw new Error('That backup is damaged.');
+  if(d.rigs.length>MAX_RIGS) throw new Error('That backup has too many rigs.');
+  var seen=Object.create(null), rigs=[];
+  d.rigs.forEach(function(r){
+    var p; try{p=parseDeck(r,true);}catch(e){return;}   // skip a damaged rig, keep the rest
+    if(p.id){if(seen[p.id]) return; seen[p.id]=1;}
+    rigs.push(p);
+  });
+  if(!rigs.length) throw new Error('There are no rigs in that backup.');
+  return {set:cleanSet(d.set),rigs:rigs};
+}
+function restoreBackup(b){
+  var have=Object.create(null); state.rigs.forEach(function(r){if(r.deckId)have[r.deckId]=1;});
+  var fresh=b.rigs.filter(function(p){return !(p.id&&have[p.id]);});
+  var skipped=b.rigs.length-fresh.length;
+  if(!fresh.length){toast('Everything in that backup is already here.');return;}
+  var nc=0,nt=0; fresh.forEach(function(p){nc+=p.comps.length;p.comps.forEach(function(c){nt+=c.tools.length;});});
+  var msg='Restore '+pl(fresh.length,'rig')+' ('+pl(nc,'compartment')+', '+pl(nt,'tool')+') from this backup?'+
+    (skipped?' '+pl(skipped,'rig')+' you already have will be left as they are.':'')+' Your quiz progress comes back too.';
+  confirmSheet(msg,'Restore',function(){doRestore(fresh,b.set);},'teal');
+}
+function doRestore(list,setName){
+  var rigs=[],comps=[],tools=[],photos=[], now=Date.now();
+  list.forEach(function(p,i){
+    var name=p.name, base=name, n=1;
+    while(state.rigs.concat(rigs).some(function(r){return lc(r.name)===lc(name);})){ n++; name=base.slice(0,MAX_NAME-16)+' (restored'+(n>2?' '+(n-1):'')+')'; }
+    var rig={id:uid(),name:name,created:now+i};
+    if(p.fromShare){rig.fromShare=true; if(p.set) rig.setName=p.set;}
+    if(p.id){rig.deckId=p.id;rig.deckRev=p.rev;}
+    rigs.push(rig);
+    p.comps.forEach(function(pc){
+      var comp={id:uid(),rigId:rig.id,name:pc.name,photoId:null,created:now+comps.length}; if(pc.sid) comp.sid=pc.sid;
+      if(pc.blob){var pid=uid();photos.push({id:pid,blob:pc.blob});comp.photoId=pid;}
+      comps.push(comp);
+      pc.tools.forEach(function(pt){
+        var t={id:uid(),rigId:rig.id,compId:comp.id,name:pt.name,x:pt.x,y:pt.y,srs:pt.srs||newSrs(),created:now+tools.length};
+        if(pt.sid)t.sid=pt.sid; if(pt.note)t.note=pt.note; tools.push(t);});
+    });
+  });
+  return Promise.all(photos.map(function(q){return Store.put('photos',q);}).concat(rigs.map(function(r){return save('rigs',r);}),comps.map(function(c){return save('comps',c);}),tools.map(function(t){return save('tools',t);})))
+    .then(function(){
+      photos.forEach(function(q){photoUrl.set(q.id,URL.createObjectURL(q.blob));});
+      state.rigs.push.apply(state.rigs,rigs);state.comps.push.apply(state.comps,comps);state.tools.push.apply(state.tools,tools);
+      if(setName&&!getSetName()) setSetName(setName);
+      toast('Restored '+pl(rigs.length,'rig')+'.');
+      state.edit=false; go('home');
+    }).catch(function(e){console.error(e);toast('Restore failed part-way. Open the file again.');});
+}
+
+/* ---------- files opened from outside the app (Messages, Mail, Files, AirDrop) ---------- */
+var lastIncoming={url:'',t:0};
+function b64ToFile(b64){
+  b64=String(b64).replace(/^data:[^,]*,/,'');
+  var bin=atob(b64), bytes=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+  return new File([bytes],'shared.rigdeck',{type:'application/json'});
+}
+function readIncoming(url){
+  var cap=window.Capacitor, P=cap&&cap.Plugins;
+  var viaFs=(P&&P.Filesystem&&P.Filesystem.readFile)?Promise.resolve(P.Filesystem.readFile({path:url})):Promise.reject(new Error('no filesystem'));
+  return viaFs.then(function(r){
+    var d=r&&r.data;
+    if(typeof d==='string'&&d) return b64ToFile(d);
+    if(d&&typeof d.text==='function') return new File([d],'shared.rigdeck',{type:'application/json'});
+    throw new Error('empty');
+  }).catch(function(e1){
+    console.error('readFile failed, trying fetch',e1);
+    var u=(cap&&cap.convertFileSrc)?cap.convertFileSrc(url):url;
+    return fetch(u).then(function(r){if(!r.ok)throw new Error('fetch '+r.status);return r.blob();}).then(function(b){return new File([b],'shared.rigdeck',{type:'application/json'});});
+  });
+}
+function openIncoming(url){
+  if(typeof url!=='string'||!/\.(rigdeck|json)$/i.test(url.split('?')[0].split('#')[0])) return;
+  var now=Date.now(); if(lastIncoming.url===url&&now-lastIncoming.t<4000) return; // the same open can be delivered twice at launch
+  lastIncoming={url:url,t:now};
+  state.edit=false;
+  readIncoming(url).then(importDeck).catch(function(e){console.error(e);toast('Could not open that file.');});
+}
+function setupIncoming(){
+  var cap=window.Capacitor, P=cap&&cap.Plugins, A=P&&P.App; if(!A||!A.addListener) return;
+  try{A.addListener('appUrlOpen',function(e){openIncoming(e&&e.url);});}catch(e){console.error(e);}
+  try{if(A.getLaunchUrl) Promise.resolve(A.getLaunchUrl()).then(function(r){if(r&&r.url)openIncoming(r.url);}).catch(function(){});}catch(e){console.error(e);}
+}
+function sidOf(x){return typeof x==='string'&&/^[A-Za-z0-9_-]{1,64}$/.test(x)?x:null;}
+function parseDeck(d,allowEmpty){
+  if(!d||d.app!=='knowyourrig'||d.v!==1||typeof d.name!=='string'||!Array.isArray(d.comps)||!Array.isArray(d.tools)) throw new Error('That is not a Know Your Rig file.');
+  if(d.comps.length>MAX_COMPS||d.tools.length>MAX_COMPS*MAX_TOOLS) throw new Error('That rig is too large.');
+  var comps=[], keyMap=Object.create(null), seenC=Object.create(null), seenT=Object.create(null);
+  d.comps.forEach(function(c){
+    if(!c||typeof c.name!=='string') return;
+    var o={name:c.name.trim().slice(0,MAX_NAME)||'Compartment',blob:null,sid:sidOf(c.sid),tools:[]};
+    if(o.sid){if(seenC[o.sid]) o.sid=null; else seenC[o.sid]=1;}
+    if(typeof c.photo==='string'&&c.photo){
+      if(c.photo.length>MAX_PHOTO_CHARS) throw new Error('A photo in that file is too large.');
+      o.blob=dataUrlToBlob(c.photo);
+    }
+    if(typeof c.k==='number') keyMap[c.k]=o; comps.push(o);
+  });
+  d.tools.forEach(function(t){
+    if(!t||typeof t.name!=='string'||typeof t.k!=='number'||!(t.k in keyMap)) return;
+    var ok=typeof t.x==='number'&&typeof t.y==='number'&&t.x>=0&&t.x<=1&&t.y>=0&&t.y<=1;
+    var o={name:t.name.trim().slice(0,MAX_NAME)||'Tool',x:ok?t.x:null,y:ok?t.y:null,sid:sidOf(t.sid),note:(typeof t.note==='string'?t.note.trim().slice(0,MAX_NOTE):''),srs:t.srs?cleanSrs(t.srs):null};
+    if(o.sid){if(seenT[o.sid]) o.sid=null; else seenT[o.sid]=1;}
+    keyMap[t.k].tools.push(o);
+  });
+  if(!comps.length&&!allowEmpty) throw new Error('That rig has no compartments.');
+  return {name:d.name.trim().slice(0,MAX_NAME)||'Imported rig',id:sidOf(d.id),rev:(typeof d.rev==='number'&&isFinite(d.rev))?d.rev:0,set:cleanSet(d.set),fromShare:d.fromShare===true,comps:comps};
+}
+function importDeck(file){
+  if(file.size>150*1024*1024){toast('That file is too large.');return;}
+  file.text().then(function(txt){
+    var d; try{d=JSON.parse(txt);}catch(e){throw new Error('That is not a rig file.');}
+    if(d&&d.app==='knowyourrig'&&d.kind==='backup') return restoreBackup(parseBackup(d));
+    if(file.size>60*1024*1024) throw new Error('That file is too large.');
+    var p=parseDeck(d);
+    var same=p.id&&state.rigs.find(function(r){return r.deckId===p.id;});
+    if(same){
+      if((same.deckRev||0)>=p.rev){toast('“'+same.name+'” is already up to date.');go('rig',{rigId:same.id});return;}
+      confirmSheet('A newer version of “'+same.name+'” is in this file. Update it? Your progress on tools that are still in the deck is kept.','Update rig',function(){applyUpdate(same,p);},'teal');
+      return;
+    }
+    return addImported(p);
+  }).catch(function(e){console.error(e);toast(e&&e.message?e.message:'Import failed.');});
+}
+function addImported(p){
+  var name=p.name, base=name, n=1;
+  while(state.rigs.some(function(r){return lc(r.name)===lc(name);})){ n++; name=base.slice(0,MAX_NAME-16)+' (imported'+(n>2?' '+(n-1):'')+')'; }
+  var rig={id:uid(),name:name,created:Date.now()}, comps=[], tools=[], photos=[];
+  rig.fromShare=true; if(p.set) rig.setName=p.set;
+  if(p.id){rig.deckId=p.id;rig.deckRev=p.rev;}
+  p.comps.forEach(function(pc){
+    var comp={id:uid(),rigId:rig.id,name:pc.name,photoId:null,created:Date.now()}; if(pc.sid) comp.sid=pc.sid;
+    if(pc.blob){var pid=uid();photos.push({id:pid,blob:pc.blob});comp.photoId=pid;}
+    comps.push(comp);
+    pc.tools.forEach(function(pt){var t={id:uid(),rigId:rig.id,compId:comp.id,name:pt.name,x:pt.x,y:pt.y,srs:newSrs(),created:Date.now()};if(pt.sid)t.sid=pt.sid;if(pt.note)t.note=pt.note;tools.push(t);});
+  });
+  return Promise.all(photos.map(function(q){return Store.put('photos',q);}).concat([save('rigs',rig)],comps.map(function(c){return save('comps',c);}),tools.map(function(t){return save('tools',t);})))
+    .then(function(){
+      photos.forEach(function(q){photoUrl.set(q.id,URL.createObjectURL(q.blob));});
+      state.rigs.push(rig);state.comps.push.apply(state.comps,comps);state.tools.push.apply(state.tools,tools);
+      toast('Imported '+rig.name+': '+pl(comps.length,'compartment')+', '+pl(tools.length,'tool')+'.');
+      go('rig',{rigId:rig.id});
+    });
+}
+/* Update an already-imported deck in place. Items are matched by their stable ids, so progress on
+   surviving tools is kept. Items with no id (added locally) are left alone. */
+function applyUpdate(rig,p){
+  var cBy=Object.create(null), tBy=Object.create(null), inC=Object.create(null), inT=Object.create(null);
+  state.comps.filter(function(c){return c.rigId===rig.id&&c.sid;}).forEach(function(c){cBy[c.sid]=c;});
+  state.tools.filter(function(t){return t.rigId===rig.id&&t.sid;}).forEach(function(t){tBy[t.sid]=t;});
+  var st={added:0,changed:0,removed:0}, newPhotos=[], oldPhotos=[], touchedC=[], touchedT=[];
+  p.comps.forEach(function(pc){
+    var comp=pc.sid&&cBy[pc.sid];
+    if(!comp){comp={id:uid(),rigId:rig.id,name:pc.name,photoId:null,created:Date.now()}; if(pc.sid)comp.sid=pc.sid; state.comps.push(comp); st.added++;}
+    else if(comp.name!==pc.name){comp.name=pc.name;st.changed++;}
+    if(pc.sid) inC[pc.sid]=1;
+    if(comp.photoId) oldPhotos.push(comp.photoId);
+    if(pc.blob){var pid=uid();newPhotos.push({id:pid,blob:pc.blob});comp.photoId=pid;} else comp.photoId=null;
+    touchedC.push(comp);
+    pc.tools.forEach(function(pt){
+      var t=pt.sid&&tBy[pt.sid];
+      if(!t){t={id:uid(),rigId:rig.id,compId:comp.id,name:pt.name,x:pt.x,y:pt.y,srs:newSrs(),created:Date.now()}; if(pt.sid)t.sid=pt.sid; if(pt.note)t.note=pt.note; state.tools.push(t); st.added++;}
+      else{
+        if(t.name!==pt.name||t.x!==pt.x||t.y!==pt.y||t.compId!==comp.id||(pt.note&&pt.note!==t.note)) st.changed++;
+        t.name=pt.name;t.x=pt.x;t.y=pt.y;t.compId=comp.id; if(pt.note) t.note=pt.note;   // an empty note in the deck never erases a local one
+      }
+      if(pt.sid) inT[pt.sid]=1;
+      touchedT.push(t);
+    });
+  });
+  var gone=state.tools.filter(function(t){return t.rigId===rig.id&&t.sid&&!inT[t.sid];});
+  gone.forEach(function(t){drop('tools',t.id);}); st.removed+=gone.length;
+  state.tools=state.tools.filter(function(t){return gone.indexOf(t)<0;});
+  var goneC=state.comps.filter(function(c){return c.rigId===rig.id&&c.sid&&!inC[c.sid];});
+  goneC.forEach(function(c){deleteComp(c);}); st.removed+=goneC.length;
+  rig.deckRev=p.rev; if(p.set) rig.setName=p.set;
+  Promise.all(newPhotos.map(function(q){return Store.put('photos',q);})).then(function(){
+    newPhotos.forEach(function(q){photoUrl.set(q.id,URL.createObjectURL(q.blob));});
+    oldPhotos.forEach(function(id){if(!state.comps.some(function(c){return c.photoId===id;})) forgetPhoto(id);});
+    return Promise.all([save('rigs',rig)].concat(touchedC.map(function(c){return save('comps',c);}),touchedT.map(function(t){return save('tools',t);})));
+  }).then(function(){
+    toast('Updated '+rig.name+': '+st.added+' added, '+st.changed+' changed, '+st.removed+' removed.');
+    if(state.view==='home') go('rig',{rigId:rig.id}); else {state.view='rig';state.rigId=rig.id;state.stack=[];render();}
+  }).catch(function(e){console.error(e);toast('Update failed part-way. Import the file again.');});
+}
+
+/* ---------- render + boot ---------- */
+function render(){
+  var app=document.getElementById('app'); app.replaceChildren();
+  var v={home:viewHome,rig:viewRig,comp:viewComp,quiz:viewQuiz,find:viewFind,found:viewFound}[state.view]||viewHome;
+  try{ app.append.apply(app,v()); }
+  catch(e){ console.error(e); app.append(h('div',{class:'warn'},'Something went wrong drawing this screen.'),h('button',{class:'btn block',onclick:function(){state.stack=[];state.view='home';state.quiz=null;state.placing=null;render();}},'Back to start')); }
+}
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&(state.view==='home'||state.view==='rig'))render();});
+
+Store.init().then(function(){return Promise.all([Store.all('rigs'),Store.all('comps'),Store.all('tools'),Store.all('photos')]);}).then(function(r){
+  state.rigs=r[0].sort(function(a,b){return a.created-b.created;});
+  state.comps=r[1].sort(function(a,b){return a.created-b.created;});
+  state.tools=r[2].sort(function(a,b){return a.created-b.created;}).map(function(t){t.srs=Object.assign(newSrs(),t.srs||{});return t;});
+  r[3].forEach(function(p){photoUrl.set(p.id,URL.createObjectURL(p.blob));});
+}).catch(function(e){console.error(e);}).then(render).then(setupIncoming);
+
+window.RT={state:state,go:go,grade:grade,buildSession:buildSession,dayNum:dayNum,modesFor:modesFor,judgeTap:judgeTap,INTERVALS:INTERVALS,
+  newSrs:newSrs,parseDeck:parseDeck,parseBackup:parseBackup,cleanSrs:cleanSrs,isDue:isDue,isNew:isNew,_setClock:function(f){clock=f;},_persistent:function(){return persistent;}};
+})();
+</script>
+</body>
+</html>
