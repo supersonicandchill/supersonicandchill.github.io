@@ -128,7 +128,7 @@ header.top.inner h1.title{font-size:30px;line-height:1.1;margin-top:0;}
 .btn.primary{min-height:56px;font-size:18px;box-shadow:0 2px 0 rgba(26,26,46,.25);}
 .btn.tealline{background:transparent;color:var(--teal);border-color:var(--teal);}
 .btn.dashed{background:transparent;color:var(--navy);border:1.5px dashed #9AA3B2;}
-.center{text-align:center;}.nudge p{margin:6px 0 10px;}
+.center{text-align:center;}.beta{border:1.5px solid var(--teal,#3D7A6F);}.beta p{margin:6px 0 10px;}.nudge p{margin:6px 0 10px;}
 .textlink{display:block;margin:10px auto 4px;padding:10px 16px;background:none;border:0;color:var(--muted);font:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
 @media (min-width:700px){.mono{width:64px;height:64px;font-size:28px;} header.top.inner h1.title{font-size:38px;} .btn.primary{min-height:64px;}}
 
@@ -416,7 +416,14 @@ function viewHome(){
   var out=[header('Know Your Rig',false)];
   if(!state.rigs.length) out.push(h('p',{class:'sub'},'Learn where every tool lives on your apparatus. Photograph a compartment, pin the tools, then get quizzed.'));
   else if(state.tools.length) out.push(h('button',{class:'btn teal block',onclick:function(){state.findQ='';go('find',{rigId:lastRigId()});}},'Find a tool'));
-  if(backupNeeded()) out.push(h('div',{class:'card nudge'},h('div',{class:'name'},getLastBackup()?'Time for a fresh backup':'Back up your rigs'),
+  if(!isNative()){
+    var lbw=getLastBackup();
+    out.push(h('div',{class:'card beta'},h('div',{class:'name'},'Beta copy'),
+      h('p',{class:'meta'},'Your rigs are saved only in this browser, and Safari can clear them. Back up to a file, then use Import or restore in the App Store app to bring everything over.'),
+      state.rigs.length?h('button',{class:'btn teal block',onclick:exportBackup},'Back up all my rigs'):null,
+      state.rigs.length?h('p',{class:'meta center'},lbw?'Last backup: '+ago(lbw):'Not backed up yet'):null));
+  }
+  if(isNative()&&backupNeeded()) out.push(h('div',{class:'card nudge'},h('div',{class:'name'},getLastBackup()?'Time for a fresh backup':'Back up your rigs'),
     h('p',{class:'meta'},'If you delete the app or change phones, a backup file brings every rig, photo and quiz score back. Save it to iCloud Drive or email it to yourself.'),
     h('button',{class:'btn teal block',onclick:exportBackup},'Back up now')));
   if(!persistent) out.push(h('div',{class:'warn'},'Storage is unavailable here. Nothing you add will be saved.'));
@@ -439,7 +446,7 @@ function viewHome(){
   });
   out.push(h('div',{class:'pair'},h('button',{class:'btn ghost',onclick:function(){nameSheet('New rig','','Add rig',addRig);}},'+ Add rig'),
     h('button',{class:'btn ghost',onclick:function(){pickFile('',importDeck);}},'Import or restore')));
-  if(state.rigs.length){
+  if(state.rigs.length&&isNative()){
     var lb=getLastBackup();
     out.push(h('button',{class:'textlink',onclick:exportBackup},'Back up all my rigs'),
       h('p',{class:'meta center'},lb?'Last backup: '+ago(lb):'Not backed up yet'));
@@ -776,13 +783,21 @@ function deliverFile(file,title,dialog){
       return P.Share.share({title:title,url:r.uri,dialogTitle:dialog});
     }).then(function(){return true;},function(e){if(e&&/cancel/i.test(String(e.message||e)))return false;throw e;});
   }
+  var download=function(){
+    var a=h('a',{href:URL.createObjectURL(file),download:file.name}); document.body.append(a); a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500); toast('Saved '+file.name);
+    return true;
+  };
   if(navigator.canShare&&navigator.canShare({files:[file]})){
-    return navigator.share({files:[file],title:title}).then(function(){return true;},function(e){if(e&&e.name==='AbortError')return false;throw e;});
+    // Safari refuses to share if too much time passed since the tap (NotAllowedError); any failure other than cancel falls back to a download
+    return navigator.share({files:[file],title:title}).then(function(){return true;},function(e){
+      if(e&&e.name==='AbortError') return false;
+      console.error('share failed, downloading instead',e); return download();
+    });
   }
-  var a=h('a',{href:URL.createObjectURL(file),download:file.name}); document.body.append(a); a.click();
-  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500); toast('Saved '+file.name);
-  return Promise.resolve(true);
+  return Promise.resolve(download());
 }
+function isNative(){var c=window.Capacitor; return !!(c&&c.isNativePlatform&&c.isNativePlatform());}
 function exportDeck(rig){
   serializeRig(rig,false).then(function(deck){
     var file=new File([JSON.stringify(deck)],safeFile(rig.name),{type:'application/json'});
