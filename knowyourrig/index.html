@@ -128,7 +128,7 @@ header.top.inner h1.title{font-size:30px;line-height:1.1;margin-top:0;}
 .btn.primary{min-height:56px;font-size:18px;box-shadow:0 2px 0 rgba(26,26,46,.25);}
 .btn.tealline{background:transparent;color:var(--teal);border-color:var(--teal);}
 .btn.dashed{background:transparent;color:var(--navy);border:1.5px dashed #9AA3B2;}
-.center{text-align:center;}.beta{border:1.5px solid var(--teal,#3D7A6F);}.beta p{margin:6px 0 10px;}.nudge p{margin:6px 0 10px;}
+.center{text-align:center;}.alsoin{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0;}.beta{border:1.5px solid var(--teal,#3D7A6F);}.beta p{margin:6px 0 10px;}.nudge p{margin:6px 0 10px;}
 .textlink{display:block;margin:10px auto 4px;padding:10px 16px;background:none;border:0;color:var(--muted);font:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
 @media (min-width:700px){.mono{width:64px;height:64px;font-size:28px;} header.top.inner h1.title{font-size:38px;} .btn.primary{min-height:64px;}}
 
@@ -277,14 +277,14 @@ function judgeTap(x,y,px,py,w,hgt){return Math.hypot((x-px)*w,(y-py)*hgt)<=TAP_R
 
 /* ---------- navigation ---------- */
 function go(view,ids,quiz){
-  state.stack.push({view:state.view,rigId:state.rigId,compId:state.compId});
+  state.stack.push({view:state.view,rigId:state.rigId,compId:state.compId,toolId:state.toolId});
   state.view=view; Object.assign(state,ids||{}); state.quiz=quiz||null; state.placing=null;
   if(view!=='rig'&&view!=='comp') state.edit=false;
   render(); window.scrollTo(0,0);
 }
 function back(){
   var p=state.stack.pop();
-  if(p){state.view=p.view;state.rigId=p.rigId;state.compId=p.compId;} else {state.view='home';}
+  if(p){state.view=p.view;state.rigId=p.rigId;state.compId=p.compId;if(p.toolId!==undefined)state.toolId=p.toolId;} else {state.view='home';}
   state.quiz=null; state.placing=null; if(state.view!=='rig'&&state.view!=='comp') state.edit=false; render(); window.scrollTo(0,0);
 }
 
@@ -520,8 +520,9 @@ function viewFound(){
   var t=toolById(state.toolId), c=t&&compById(t.compId);
   if(!t||!c){state.view='find';return viewFind();}
   var out=[header(t.name,true),h('div',{class:'found'},h('div',{class:'lbl'},'It is in'),h('div',{class:'where'},c.name))];
-  var others=state.tools.filter(function(o){return o.rigId===t.rigId&&o.id!==t.id&&lc(o.name)===lc(t.name);}).map(function(o){var oc=compById(o.compId);return oc?oc.name:null;}).filter(Boolean);
-  if(others.length) out.push(h('p',{class:'meta'},'Also in: '+others.join(', ')));
+  var others=state.tools.filter(function(o){return o.rigId===t.rigId&&o.id!==t.id&&lc(o.name)===lc(t.name)&&compById(o.compId);});
+  if(others.length) out.push(h('div',{class:'alsoin'},h('span',{class:'meta'},'Also in'),others.map(function(o){
+    return h('button',{class:'chip',onclick:function(){go('found',{toolId:o.id});}},compById(o.compId).name);})));
   if(c.photoId&&photoUrl.has(c.photoId)){
     out.push(photoView(c,{pins:t.x!=null?[{x:t.x,y:t.y,text:'★',label:t.name,ring:true}]:[]}));
     if(t.x==null) out.push(h('p',{class:'meta'},'No pin was set for this tool. Look in the compartment above.'));
