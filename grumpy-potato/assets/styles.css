@@ -123,3 +123,13 @@ img.broken{visibility:hidden}
 .acc-b{padding:16px 18px 20px}
 
 .lrow .badge{width:48px;height:48px;border-radius:8px;flex:none;background:#111;color:var(--yellow,#F2B134);display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-weight:700;font-size:1.15rem;letter-spacing:.02em}
+
+.hero-offer{background:#111;color:#fff;border-radius:8px;padding:22px 18px;margin:22px 0 8px;text-align:left;border:3px solid #111;box-shadow:6px 6px 0 var(--tan,#B88A5B)}
+.hero-offer .cta-k{display:inline-block;background:var(--yellow,#F2B134);color:#111;font:600 .72rem Oswald,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;margin:0 0 10px}
+.hero-offer h2{font-family:'Patua One',serif;font-size:1.7rem;line-height:1.15;margin:0 0 10px;color:#fff}
+.ho-lead{margin:0 0 14px;color:#e8e8e8;font-size:1.02rem}
+.ho-steps{margin:0 0 18px;padding-left:1.2em;color:#e8e8e8}.ho-steps li{margin:0 0 6px}.ho-steps b{color:var(--yellow,#F2B134)}
+.ho-btn{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--yellow,#F2B134);color:#111;text-decoration:none;font:700 1.05rem Oswald,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:16px 18px;border-radius:4px;min-height:56px}
+.ho-btn:hover,.ho-btn:focus-visible{filter:brightness(1.08);outline:3px solid #fff;outline-offset:2px}
+.ho-link{display:block;margin-top:12px;color:#fff;text-align:center;text-decoration:underline;font-size:.95rem}
+@media(min-width:700px){.hero-offer{padding:30px 32px}.hero-offer h2{font-size:2.1rem}}
