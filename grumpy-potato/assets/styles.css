@@ -133,3 +133,8 @@ img.broken{visibility:hidden}
 .ho-btn:hover,.ho-btn:focus-visible{filter:brightness(1.08);outline:3px solid #fff;outline-offset:2px}
 .ho-link{display:block;margin-top:12px;color:#fff;text-align:center;text-decoration:underline;font-size:.95rem}
 @media(min-width:700px){.hero-offer{padding:30px 32px}.hero-offer h2{font-size:2.1rem}}
+
+.idline{font:600 .95rem Oswald,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:6px 0 0;color:#111}
+.hero-proof{text-align:left;margin:18px 0 6px;padding:14px 16px;border:2px solid #111;border-radius:8px;background:#fff}
+.hero-proof p{margin:0 0 8px;font-size:.98rem}.hero-proof p:last-child{margin:0}
+.hero-proof a{color:#111;text-decoration:underline;font-weight:600}
