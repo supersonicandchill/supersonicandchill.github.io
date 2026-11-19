@@ -110,3 +110,14 @@ img.broken{visibility:hidden}
 @keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
 @media(prefers-reduced-motion:reduce){.cta-b i{animation:none}.cta-wip{transform:none}}
 @media(min-width:900px){.ctas{grid-template-columns:1fr 1fr}}
+
+.acc{display:grid;gap:10px;margin-top:20px}
+.acc-i{border:2px solid #111;background:#fff;border-radius:4px}
+.acc-i summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px 18px;font-family:'Patua One',serif;font-size:1.3rem;min-height:56px}
+.acc-i summary::-webkit-details-marker{display:none}
+.acc-i summary::before{content:'+';font-family:Oswald,sans-serif;font-size:1.6rem;width:1.2em;text-align:center;flex:none;color:#111}
+.acc-i[open] summary::before{content:'\2212'}
+.acc-i[open] summary{background:#111;color:#fff}.acc-i[open] summary::before{color:var(--yellow,#F2B134)}
+.acc-t{flex:1}.acc-n{font-family:Oswald,sans-serif;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.acc-i summary:focus-visible{outline:3px solid var(--yellow,#F2B134);outline-offset:2px}
+.acc-b{padding:16px 18px 20px}

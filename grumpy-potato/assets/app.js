@@ -23,3 +23,5 @@
 })();
 // if a remote image fails, hide the broken-image icon and alt text
 document.addEventListener('error', function (e) { if (e.target.tagName === 'IMG' && e.target.closest('main')) e.target.classList.add('broken'); }, true);
+
+;(function(){var d=[].slice.call(document.querySelectorAll('details.acc-i'));d.forEach(function(x){x.addEventListener('toggle',function(){if(x.open){d.forEach(function(y){if(y!==x)y.open=false})}})})})();
